@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-            title: new Text("Stateful Widget!"),
+            title: new Text("Lost Pet application #"),
             backgroundColor: Colors.deepOrange),
         body: new Container(
             child: new Center(
@@ -94,10 +94,11 @@ class _foundpetState extends State<foundpet> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Deneme2"),
+        title: new Text("Please , enter  informations."),
         backgroundColor: Colors.deepOrange,
       ),
-      body: Container(
+      body: Center( child: Container(
+        width: MediaQuery.of(context).size.width/2,
         child: Form(
           key: _formKey,
           child: Column(
@@ -146,6 +147,7 @@ class _foundpetState extends State<foundpet> {
                 onSaved: (value) => notes = value,
               ),
               TextFormField(
+                maxLength: 11,
                 decoration: InputDecoration(
                     border: InputBorder.none, hintText: 'Contact Number'),
                 validator: (value) {
@@ -172,7 +174,7 @@ class _foundpetState extends State<foundpet> {
             ],
           ),
         ),
-      ),
+      ),),
     );
   }
 
