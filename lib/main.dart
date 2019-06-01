@@ -7,7 +7,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      // title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -25,13 +26,15 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+//color: Color(0xFFEFDECD),
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-            title: new Text("Lost Pet application #"),
-            backgroundColor: Colors.deepOrange),
+          title: new Text("Lost Pet application #"),
+          backgroundColor: Color(0xFF5F9EA0),
+        ),
         body: new Container(
             child: new Center(
                 child: new Column(
@@ -97,93 +100,100 @@ class _foundpetState extends State<foundpet> {
         title: new Text("Please , enter  informations."),
         backgroundColor: Colors.deepOrange,
       ),
-      body: Center( child: Container(
-        width: MediaQuery.of(context).size.width/2,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Please enter a pets type'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                },
-                onSaved: (value) => animalType = value,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Please enter a pets color'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                },
-                onSaved: (value) => animalColor = value,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Please enter Location'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                },
-                onSaved: (value) => location = value,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    border: InputBorder.none, hintText: 'Notes'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter some text';
-                  }
-                },
-                onSaved: (value) => notes = value,
-              ),
-              TextFormField(
-                maxLength: 11,
-                decoration: InputDecoration(
-                    border: InputBorder.none, hintText: 'Contact Number'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Contact number';
-                  }
-                },
-                onSaved: (value) => con_number = value,
-              ),
-              RaisedButton(
-                child: new Text("SAVE",
-                    style: new TextStyle(
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic,
-                        fontSize: 20.0)),
-                color: Colors.yellow,
-                onPressed: createData,
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width / 2,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                     // fillColor: Color(0xFFEFDECD),
+                      border: InputBorder.none,
+                      hintText: 'Please enter a pets type'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                  },
+                  onSaved: (value) => animalType = value,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Please enter a pets color'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                  },
+                  onSaved: (value) => animalColor = value,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Please enter Location'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                  },
+                  onSaved: (value) => location = value,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none, hintText: 'Notes'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                  },
+                  onSaved: (value) => notes = value,
+                ),
+                TextFormField(
+                  maxLength: 11,
+                  decoration: InputDecoration(
+                      border: InputBorder.none, hintText: 'Contact Number'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Contact number';
+                    }
+                  },
+                  onSaved: (value) => con_number = value,
+                ),
+                RaisedButton(
+                  child: new Text("SAVE",
+                      style: new TextStyle(
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 20.0)),
+                  color: Colors.yellow,
+                  onPressed: createData,
 
-                /*    {
+                  /*    {
             Navigator.pop(context);
           },
           */
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),),
+      ),
     );
   }
 
   void createData() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
         return Scaffold(
-          body: Container(child: Center(child: CircularProgressIndicator(),),),
+          body: Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
         );
       }));
       DocumentReference ref = await db.collection('news').add({
@@ -198,18 +208,6 @@ class _foundpetState extends State<foundpet> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
-  }
-
-  void updateData(DocumentSnapshot doc) async {
-    await db
-        .collection('CRUD')
-        .document(doc.documentID)
-        .updateData({'todo': 'please ğŸ¤«'});
-  }
-
-  void deleteData(DocumentSnapshot doc) async {
-    await db.collection('CRUD').document(doc.documentID).delete();
-    setState(() => id = null);
   }
 }
 
@@ -236,6 +234,7 @@ class _lostpetState extends State<lostpet> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
         title: Text('Lost Animals'),
         centerTitle: true,
       ),
@@ -252,12 +251,15 @@ class _lostpetState extends State<lostpet> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   DocumentSnapshot ds = snapshot.data.documents[index];
-                  return Container(
-                    height: 50,
-                    color: Colors.cyanAccent,
-                    child: Center(
-                        child: Text(
-                            '^#${ds["animalType"]}# ( ${ds["animalColor"]} ) (${ds["location"]})(${ds["notes"]}) #(${ds["con_number"].toString()})# ')),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 50,
+                      color: Color(0xFFEFDECD),
+                      child: Center(
+                          child: Text(
+                              '#${ds["animalType"]}# ( ${ds["animalColor"]} ) (${ds["location"]})(${ds["notes"]}) #(${ds["con_number"].toString()})# ')),
+                    ),
                   );
                 },
               );
@@ -290,6 +292,19 @@ class _lostpetState extends State<lostpet> {
       ),
     ); */
 
+/*
+  void updateData(DocumentSnapshot doc) async {
+    await db
+        .collection('CRUD')
+        .document(doc.documentID)
+        .updateData({'todo': 'please ğŸ¤«'});
+  }
+
+  void deleteData(DocumentSnapshot doc) async {
+    await db.collection('CRUD').document(doc.documentID).delete();
+    setState(() => id = null);
+  }
+  */
 ////////////////////////////////////////
 /*
 class AnimalList extends StatelessWidget {
