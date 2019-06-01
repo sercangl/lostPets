@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pets/model/pet.dart';
-import 'package:pets/page/waiting_page.dart';
 import 'package:pets/repository/db.dart';
 import 'package:random_string/random_string.dart' as random;
 
@@ -14,6 +13,7 @@ class FoundPet extends StatefulWidget {
 }
 
 class _FoundPetState extends State<FoundPet> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String id;
   final _formKey = GlobalKey<FormState>();
   String name;
@@ -28,6 +28,7 @@ class _FoundPetState extends State<FoundPet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Fill Information"),
       ),
@@ -142,7 +143,10 @@ class _FoundPetState extends State<FoundPet> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (imgUrl == null) {
-        print('wait');
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          content: Text('Wait for uploading'),
+          duration: Duration(seconds: 3),
+        ));
       } else {
         Pet newPet = Pet(
           name: name,
@@ -175,16 +179,14 @@ class _FoundPetState extends State<FoundPet> {
     File _imageFile;
     try {
       _imageFile = await ImagePicker.pickImage(source: source);
-      StorageReference storageReference =
-          FirebaseStorage.instance.ref().child("/pets");
-      StorageUploadTask uploadTask = storageReference.putFile(_imageFile);
-
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL() as String;
+      final StorageReference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('pets/');
+      final StorageUploadTask uploadTask =
+          firebaseStorageRef.child(random.randomAlpha(20)).putFile(_imageFile);
+      var imageUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
 
       setState(() {
-        imgUrl = downloadUrl;
+        imgUrl = imageUrl.toString();
       });
     } catch (e) {
       // _pickImageError = e;

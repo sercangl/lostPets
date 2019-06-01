@@ -64,7 +64,8 @@ class PetInfoCard extends StatelessWidget {
           Text(doc['animalType']),
           Text(doc['location']),
           Text(doc['con_number']),
-          Text(doc['notes'])
+          Text(doc['notes']),
+          Image.network(doc['imgUrl'].toString())
         ],
       ),
     );
