@@ -12,6 +12,9 @@ class App extends StatelessWidget {
           color: Colors.deepOrange,
         ),
         primarySwatch: Colors.blue,
+        buttonColor: Colors.deepOrangeAccent,
+        indicatorColor: Colors.deepOrange,
+        
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );

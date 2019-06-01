@@ -11,6 +11,7 @@ abstract class DbOperations {
       'animalType': pet.type,
       'notes': pet.notes,
       'con_number': pet.contactNumber,
+      'imgUrl': pet.imgUrl,
     });
   }
 }

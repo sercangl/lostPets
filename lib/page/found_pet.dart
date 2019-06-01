@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:pets/model/pet.dart';
+import 'package:pets/page/waiting_page.dart';
 import 'package:pets/repository/db.dart';
+import 'package:random_string/random_string.dart' as random;
 
 class FoundPet extends StatefulWidget {
   FoundPet({Key key}) : super(key: key);
@@ -19,6 +23,7 @@ class _FoundPetState extends State<FoundPet> {
   String notes;
   DateTime date;
   String contactNumber;
+  String imgUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -97,13 +102,27 @@ class _FoundPetState extends State<FoundPet> {
                   },
                   onSaved: (value) => contactNumber = value,
                 ),
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.camera_alt),
+                        onPressed: () async {
+                          await _onImageButtonPressed(ImageSource.camera);
+                        }),
+                    IconButton(
+                      icon: Icon(Icons.photo),
+                      onPressed: () async {
+                        await _onImageButtonPressed(ImageSource.gallery);
+                      },
+                    ),
+                  ],
+                ),
                 RaisedButton(
                   child: Text("SAVE",
                       style: TextStyle(
                           color: Colors.white,
                           fontStyle: FontStyle.italic,
                           fontSize: 20.0)),
-                  color: Colors.yellow,
                   onPressed: createData,
 
                   /*    {
@@ -122,27 +141,53 @@ class _FoundPetState extends State<FoundPet> {
   void createData() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Pet newPet = Pet(
+      if (imgUrl == null) {
+        print('wait');
+      } else {
+        Pet newPet = Pet(
           name: name,
           type: type,
           color: color,
           location: location,
           notes: notes,
           date: date,
-          contactNumber: contactNumber);
-      DbOperations.addPet(newPet);
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return Scaffold(
-          body: Container(
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
+          contactNumber: contactNumber,
+          imgUrl: imgUrl,
         );
-      }));
+        DbOperations.addPet(newPet);
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return Scaffold(
+            body: Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }));
 
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  Future<void> _onImageButtonPressed(ImageSource source) async {
+    File _imageFile;
+    try {
+      _imageFile = await ImagePicker.pickImage(source: source);
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child("/pets");
+      StorageUploadTask uploadTask = storageReference.putFile(_imageFile);
+
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL() as String;
+
+      setState(() {
+        imgUrl = downloadUrl;
+      });
+    } catch (e) {
+      // _pickImageError = e;
     }
   }
 }
